@@ -2,6 +2,8 @@ package grules
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 )
 
 const (
@@ -89,6 +91,16 @@ func (e Engine) Evaluate(props map[string]interface{}) bool {
 	return true
 }
 
+// Stringify will generate a human readable rule set
+func (e Engine) Stringify() string {
+	parts := []string{}
+	for _, c := range e.Composites {
+		parts = append(parts, c.stringify(e.comparators))
+	}
+
+	return strings.Join(parts, " && ")
+}
+
 // Evaluate will ensure all either all of the rules are true, if given
 // the AND operator, or that one of the rules is true if given the OR
 // operator.
@@ -125,6 +137,22 @@ func (c Composite) evaluate(props map[string]interface{}, comps map[string]Compa
 	}
 
 	return false
+}
+
+// Stringify will generate a human readable rule set
+func (c Composite) stringify(comps map[string]Comparator) string {
+	s := "("
+	parts := []string{}
+	for _, r := range c.Rules {
+		parts = append(parts, fmt.Sprintf("{%s %s %s}", r.Path, r.Comparator, r.Value))
+	}
+	for _, cc := range c.Composites {
+		parts = append(parts, cc.stringify(comps))
+	}
+	s += strings.Join(parts, " " + c.Operator + " ")
+
+	s += ")"
+	return s
 }
 
 // Evaluate will return true if the rule is true, false otherwise
