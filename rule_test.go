@@ -269,6 +269,8 @@ func TestEngineEvaluate(t *testing.T) {
 		if res != true {
 			t.Fatal("expected engine to pass")
 		}
+		humanReadable := e.Stringify()
+		t.Log(humanReadable)
 	})
 
 	t.Run("1 composite, 1 rule", func(t *testing.T) {
@@ -299,6 +301,12 @@ func TestEngineEvaluate(t *testing.T) {
 		res := e.Evaluate(props)
 		if res != true {
 			t.Fatal("expected engine to pass")
+		}
+
+		expectedStr := "({address.bedroom.furniture contains tv})"
+		actualStr := e.Stringify()
+		if expectedStr != actualStr {
+			t.Fatalf("expected %s but got %s", expectedStr, actualStr)
 		}
 	})
 
@@ -346,6 +354,12 @@ func TestEngineEvaluate(t *testing.T) {
 		res := e.Evaluate(props)
 		if res != true {
 			t.Fatal("expected engine to pass")
+		}
+
+		expectedStr := "({user.name eq Trevor} and {user.id eq 1234}) && ({user.name eq Trevor} or {user.id eq 7})"
+		actualStr := e.Stringify()
+		if expectedStr != actualStr {
+			t.Fatalf("expected %s but got %s", expectedStr, actualStr)
 		}
 	})
 }

@@ -144,12 +144,12 @@ func (c Composite) stringify(comps map[string]Comparator) string {
 	s := "("
 	parts := []string{}
 	for _, r := range c.Rules {
-		parts = append(parts, fmt.Sprintf("{%s %s %s}", r.Path, r.Comparator, r.Value))
+		parts = append(parts, fmt.Sprintf("{%s %s %v}", r.Path, r.Comparator, r.Value))
 	}
 	for _, cc := range c.Composites {
 		parts = append(parts, cc.stringify(comps))
 	}
-	s += strings.Join(parts, " " + c.Operator + " ")
+	s += strings.Join(parts, " "+c.Operator+" ")
 
 	s += ")"
 	return s
